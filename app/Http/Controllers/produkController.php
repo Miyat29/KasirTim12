@@ -47,17 +47,22 @@ class ProdukController extends Controller
                 // Format angka dengan pemisah ribuan
                 return number_format($produk->harga_jual, 0, ',', '.');
             })
+            ->addColumn('diskon_produk', function ($produk) {
+                return $produk->diskon_produk ? $produk->diskon_produk . '%' : '0%';
+            })            
             ->addColumn('stok', function ($produk) {
                 return format_uang($produk->stok); // Gunakan helper format_uang jika sudah ada
             })
             ->addColumn('keterangan', function ($produk) {
                if ($produk->stok < 1) {
-                    return '<span class="label label-danger">'. 'stok habis' .'</span>';
+                    return '<span class="label label-danger">'. 'Stok Habis' .'</span>';
                } elseif ($produk->stok < 21) {
-                 return '<span class="label label-warning">'. 'stok kurang' .'</span>';
-               } elseif ($produk->stok > 20 ) {
-               return '<span class="label label-info">'. 'stok cukup' .'</span>';
-               }
+                 return '<span class="label label-warning">'. 'Stok Menipis' .'</span>';
+               } elseif ($produk->stok < 50 ) {
+               return '<span class="label label-success">'. 'Stok Cukup' .'</span>';
+               }  elseif ($produk->stok > 50 ) {
+                return '<span class="label label-info">'. 'Stok Banyak' .'</span>';
+                }
             })
             ->addColumn('aksi', function ($produk) {
                 return '
@@ -93,6 +98,7 @@ class ProdukController extends Controller
         $request->merge([
             'harga_beli' => str_replace('.', '', $request->harga_beli),
             'harga_jual' => str_replace('.', '', $request->harga_jual),
+            'diskon_produk' => $request->diskon_produk ?? 0,  // Tambahkan validasi diskon default
         ]);
     
         $produk = Produk::latest()->first() ?? new Produk();
@@ -139,6 +145,7 @@ class ProdukController extends Controller
     $request->merge([
         'harga_beli' => str_replace('.', '', $request->harga_beli),
         'harga_jual' => str_replace('.', '', $request->harga_jual),
+        // 'diskon' => $request->diskon_produk ?? 0,  // Tambahkan validasi diskon default
     ]);
 
     $produk = Produk::find($id);

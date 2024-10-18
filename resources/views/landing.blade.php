@@ -509,7 +509,8 @@
                     data-aos-duration="800">Mulai</a></div>
         </div>
         <div class="img-ber" data-aos="fade-up" data-aos-duration="1000">
-            <img src="{{ asset('images/ftBeranda.png') }}" alt="" width="400px" height="400px">
+            <img src="{{ url($setting->path_logo) }}" alt=""
+                    width="400px" height="400px">
         </div>
     </section>
 
@@ -652,33 +653,36 @@
                 </div>
                 <div class="kasirr">
                     <h5 class="teks-kami">Ikuti Kami</h5>
-                    <a target="_blank" href="#">
+                    <a target="_blank" href="{{ $setting->instagram }}">
                         <p><img src="{{ asset('images/Instagram.png') }}" alt="" width="10px"
                                 height="10px">Instagram</p>
                     </a>
-                    <a target="_blank" href="#">
+                    <a target="_blank" href="{{ $setting->facebook }}">
                         <p><img src="{{ asset('images/facebook.png') }}" alt="" width="10px"
                                 height="10px">Facebook</p>
                     </a>
-                    <a target="_blank" href="#">
+                    <a target="_blank" href="{{ $setting->twitter }}">
                         <p><img src="{{ asset('images/twiter-x.png') }}" alt="" width="10px"
                                 height="10px">Twiter-x</p>
                     </a>
-                    <a target="_blank" href="#">
+                    <a target="_blank" href="{{ $setting->youtube }}">
                         <p><img src="{{ asset('images/youtube.png') }}" alt="" width="10px"
                                 height="10px">Youtube</p>
                     </a>
                 </div>
                 <div class="kasirrr">
                     <h5 class="teks-kami">SmartKasir</h5>
-                    <p>Jalan. Talagasari No. 35 Kawalimukti <br> Kawali Ciamis 46253</p>
+                    <a target="_blank" href="#">
+                        <p><img src="{{ asset('images/lok p.png') }}" alt="" width="10px"
+                                height="10px">{{ $setting->alamat }}</p>
+                    </a>
                     <a target="_blank" href="https://wa.me/085727831822">
                         <p><img src="{{ asset('images/phone.png') }}" alt="" width="10px"
-                                height="10px">085727831822</p>
+                                height="10px">{{ $setting->telepon }}</p>
                     </a>
                     <a target="_blank" href="#">
                         <p><img src="{{ asset('images/email.png') }}" alt="" width="10px"
-                                height="10px">SmartKasir@gmail.com</p>
+                                height="10px">{{ $setting->email }}</p>
                     </a>
                 </div>
             </div>

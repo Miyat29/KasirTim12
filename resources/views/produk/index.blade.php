@@ -37,6 +37,7 @@
                             <th>Harga Jual</th>
                             <th>Diskon</th>
                             <th>Stok</th>
+                            <th>Keterangan</th>
                             <th width="15%"><i class="fa fa-cog"></i></th>
                         </thead>
                     </table>
@@ -74,6 +75,7 @@
                 {data: 'harga_jual'},
                 {data: 'diskon'},
                 {data: 'stok'},
+                {data: 'keterangan'},
                 {data: 'aksi', searchable: false, sortable: false},
             ]
         });

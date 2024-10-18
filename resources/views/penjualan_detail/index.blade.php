@@ -41,6 +41,7 @@
     <div class="col-lg-12">
         <div class="box">
             <div class="box-body">
+                    
                 <form class="form-produk">
                     @csrf
                     <div class="form-group row">
@@ -48,17 +49,22 @@
                         <div class="col-lg-5">
                             <div class="input-group">
                                 <input type="hidden" name="id_penjualan" id="id_penjualan" value="{{ $id_penjualan }}">
+                                {{-- HIDDEn: input ini berfungsi untuk menyimpan id_penjualan, yang menyimpan ID unik untuk transaksi penjualan saat ini --}}
+                                {{-- {{ $id_penjualan }} akan diganti dengan nilai dari variabel $id_penjualan --}}
                                 <input type="hidden" name="id_produk" id="id_produk">
                                 <input type="text" class="form-control" name="kode_produk" id="kode_produk">
-                                <span class="input-group-btn">
+                                {{-- <input type="text" id="kode_produk" class="form-control" placeholder="masukan kode produk dan tekan enter"> --}}
+                                {{-- tombol untuk menampilkan produk --}}
+                                 <span class="input-group-btn">
                                     <button onclick="tampilProduk()" class="btn btn-info btn-flat" type="button"><i class="fa fa-arrow-right"></i></button>
+                                    {{-- onclick="tampilproduk()" : ketika tombol ini di klik, fungsi javascript tampilproduk() akan di panggil --}}
                                 </span>
                             </div>
                         </div>
                     </div>
                 </form>
 
-                <table class="table table-striped table-bordered table-penjualan">
+                <table class="table table-stiped table-bordered table-penjualan">
                     <thead>
                         <th width="5%">No</th>
                         <th>Kode</th>
@@ -104,29 +110,34 @@
                                 </div>
                             </div>
                             <div class="form-group row">
-                                <label for="diskon" class="col-lg-2 control-label">Diskon</label>
+                                <label for="diskon" class="col-lg-2 control-label">Diskon Member</label>
                                 <div class="col-lg-8">
-                                    <input type="number" name="diskon" id="diskon" class="form-control" 
-                                        value="{{ ! empty($memberSelected->id_member) ? $diskon : 0 }}" 
-                                        readonly>
+                                    <input type="number" name="diskon" id="diskon" class="form-control" value="{{ ! empty($memberSelected->id_member) ? $diskon : 0}}" readonly>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label for="diskonrp" class="col-lg-2 control-label">Total Diskon</label>
+                                <div class="col-lg-8">
+                                    <input type="text" name="diskonrp" id="diskonrp" class="form-control"  readonly>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="bayar" class="col-lg-2 control-label">Bayar</label>
                                 <div class="col-lg-8">
-                                    <input type="text" id="bayarrp" class="form-control" readonly>
+                                    <input type="text" id="bayarrp"  class="form-control" readonly>
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="diterima" class="col-lg-2 control-label">Diterima</label>
                                 <div class="col-lg-8">
-                                    <input type="text" id="diterima" class="form-control" name="diterima" value="{{ $penjualan->diterima ?? 0 }}">
+                                    <input type="text" id="diterima"  class="form-control" name="diterima" 
+                                        value="{{ $penjualan->diterima ?? 0 }}">
                                 </div>
                             </div>
                             <div class="form-group row">
                                 <label for="kembali" class="col-lg-2 control-label">Kembali</label>
                                 <div class="col-lg-8">
-                                    <input type="text" id="kembali" name="kembali" class="form-control" value="0" readonly>
+                                    <input type="text" id="kembali"  name="kembali" class="form-control" value="0" readonly>
                                 </div>
                             </div>
                         </form>
@@ -141,8 +152,8 @@
     </div>
 </div>
 
-@includeIf('penjualan_detail.produk')
-@includeIf('penjualan_detail.member')
+@includeIf('Penjualan_detail.produk')
+@includeIf('Penjualan_detail.member')
 @endsection
 
 @push('scripts')
@@ -171,7 +182,7 @@
                 {data: 'jumlah'},
                 {data: 'diskon'},
                 {data: 'subtotal'},
-                {data: 'aksi', searchable: false, sortable: false},
+                {data: 'action', searchable: false, sortable: false},
             ],
             dom: 'Brt',
             bSort: false,
@@ -200,12 +211,66 @@
         });
     }
 
-        $(document).on('input', '.quantity', function () {
-            let id = $(this).data('id');
-            let jumlah = parseInt($(this).val());
-            let stok = parseInt($(this).parent().parent().find('.stok').text());
+    $('#kode_produk').on('keypress', function (e) {
+        if (e.which == 13) {  // Kode 13 adalah kode untuk tombol Enter
 
-            console.log(stok);
+            e.preventDefault();
+            let kodeProduk = $(this).val().trim(); // Ambil nilai kode produk dari input
+            if (kodeProduk !== '') {
+                // Kirimkan request AJAX ke server untuk menambah produk berdasarkan kode
+                $.ajax({
+                    url: '{{ route('transaksi.store') }}', // Sesuaikan dengan route yang benar
+                    type: 'POST',
+                    data: {
+                        kode_produk: kodeProduk, 
+                        id_penjualan: '{{ session('id_penjualan') }}', // Kirim ID Penjualan
+                        _token: '{{ csrf_token() }}'
+                    },
+                    success: function (response) {
+                        // Reset input setelah produk ditambahkan
+                        $('#kode_produk').val('');
+                        // Lakukan sesuatu, misalnya refresh data tabel penjualan
+                        // Refresh data tabel dengan memanggil ulang fungsi loadTable() jika ada
+                        setTimeout(() => {
+                            table.ajax.reload();
+                        }, 200);
+                    },
+                    error: function (xhr) {
+                        Swal.fire({
+                            icon: "warning",
+                            title: "Produk tidak ditemukan!",
+                            showConfirmButton: false,
+                            timer: 1500
+                        });
+
+                    // Kosongkan input setelah SweetAlert ditampilkan
+                    $('#kode_produk').val('');
+                    }
+                });
+            }
+        }
+    });
+
+      // Menangani event 'input' pada elemen dengan kelas 'quantity'
+    // Event 'input' akan dipicu setiap kali terjadi perubahan pada nilai input
+    $(document).on('input', '.quantity', function () {
+    // Mendapatkan nilai atribut 'data-id' dari elemen yang sedang diinput
+    // 'id' ini dapat digunakan untuk mengidentifikasi item tertentu (misalnya, produk dalam keranjang)
+    let id = $(this).data('id');
+
+    // Mengambil nilai input dari elemen '.quantity' dan mengonversinya menjadi bilangan bulat (integer)
+    // Variabel 'jumlah' menyimpan jumlah yang diinputkan pengguna
+    let jumlah = parseInt($(this).val());
+
+    // Mencari elemen dengan kelas '.stok' yang berada dalam elemen induk dari '.quantity'
+    // Proses ini naik dua tingkat ke atas untuk mencari elemen '.stok'
+    // Mengambil teks dari elemen '.stok' dan mengonversinya menjadi bilangan bulat (integer)
+    // Variabel 'stok' menyimpan jumlah stok yang tersedia
+    let stok = parseInt($(this).parent().parent().find('.stok').text());
+
+    // Menampilkan nilai 'stok' di konsol browser untuk debugging
+    // Ini digunakan untuk memastikan bahwa nilai yang diperoleh sudah benar
+    console.log(stok);
 
             if (jumlah < 1) {
                 $(this).val(1);
@@ -266,12 +331,12 @@
         });
 
         $('#diterima').on('input', function () {
-            let value = $(this).val().replace(/\D/g, '');
+            let value = $(this).val().replace(/\D/g, ''); //Hapus karakter non digit
             if (value === "") {
                 $(this).val(0);
                 return;
             }
-            $(this).val(new Intl.NumberFormat('id-ID').format(value));
+            $(this).val(new Intl.NumberFormat('id-ID').format(value)); // Format Kembali
             loadForm($('#diskon').val(), value);
         }).focus(function () {
             $(this).select();
@@ -292,14 +357,28 @@
             return; // Hentikan proses simpan jika stok tidak cukup
         }
 
-            // Ambil nilai total dan uang diterima
-            let totalBayar = parseFloat($('#bayar').val().replace(/[^0-9.-]+/g, ""));
-            let uangDiterima = parseFloat($('#diterima').val().replace(/\./g, '').replace(',', '.'));
-            // Debugging
-            console.log('Total Bayar:', totalBayar);
-            console.log('Uang Diterima:', uangDiterima);
+            // Mengambil nilai total pembayaran dari elemen dengan ID 'bayar'
+            let totalBayar = parseFloat($('#bayar').val()
+                .replace(/[^0-9.-]+/g, "")); // Menghapus semua karakter kecuali angka, titik, dan tanda minus
+            // Mengubah string menjadi angka desimal (floating-point number)
 
-            if (isNaN(uangDiterima) || isNaN(totalBayar)) {
+            // Mengambil nilai uang yang diterima dari elemen dengan ID 'diterima'
+            let uangDiterima = parseFloat($('#diterima').val()
+                .replace(/\./g, '') // Menghapus titik yang mungkin digunakan sebagai pemisah ribuan
+                .replace(',', '.')); // Mengganti koma dengan titik untuk penulisan angka desimal
+            // Mengubah string menjadi angka desimal (floating-point number)
+
+            // Mengambil nilai total diskon dari elemen dengan ID 'diskonrp'
+            let totalDiskon = $('#diskonrp').val(); // Nilai disimpan sebagai string tanpa konversi
+
+            // Menampilkan nilai-nilai tersebut di konsol browser untuk tujuan debugging
+            console.log('Total Bayar:', totalBayar); // Memeriksa apakah total pembayaran sudah benar
+            console.log('Uang Diterima:', uangDiterima); // Memeriksa apakah uang diterima sudah benar
+            console.log('Total Diskon:', totalDiskon); // Memeriksa apakah total diskon sudah benar
+
+
+            if (isNaN(uangDiterima) || isNaN(totalBayar)) { 
+                // isnan adalah fungsi untuk mengecek apakah suatu nilai bukan angka jika nilai tersebut bukan angka, isnan akan mengembalikan true(benar) sebaliknya jika nilai tersebut angka isnan akan mengembalikan false(salah).
                 Swal.fire({
                     icon: 'error',
                     title: 'Input Tidak Valid',
@@ -337,7 +416,7 @@
     function tampilProduk() {
         $('#modal-produk').modal('show');
     }
-
+ 
     function hideProduk() {
         $('#modal-produk').modal('hide');
     }
@@ -353,7 +432,8 @@
         $.post('{{ route('transaksi.store') }}', $('.form-produk').serialize())
             .done(response => {
                 $('#kode_produk').focus();
-                table.ajax.reload(() => loadForm($('#diskon').val()));
+                // table.ajax.reload(() => loadForm($('#diskon').val()));
+                table.ajax.reload(null, false)
             })
             .fail(errors => {
                 alert('Tidak dapat menyimpan data');
@@ -378,7 +458,7 @@
         $('#modal-member').modal('hide');
     }
 
-    function deleteData(url) {
+    function deleteForm(url) {
             $.post(url, {
                     '_token': $('[name=csrf-token]').attr('content'),
                     '_method': 'delete'
@@ -392,32 +472,6 @@
                 });
     }
 
-    // function deleteData(url) {
-    //     Swal.fire({
-    //         title: 'Yakin ingin menghapus data terpilih?',
-    //         text: "Data yang dihapus tidak bisa dipulihkan!",
-    //         icon: 'warning',
-    //         showCancelButton: true,
-    //         confirmButtonColor: '#d33',
-    //         cancelButtonColor: '#3085d6',
-    //         confirmButtonText: 'Hapus',
-    //         cancelButtonText: 'Batal'
-    //     }).then((result) => {
-    //         if (result.isConfirmed) {
-    //             $.post(url, {
-    //                     '_token': $('[name=csrf-token]').attr('content'),
-    //                     '_method': 'delete'
-    //                 })
-    //                 .done((response) => {
-    //                     table.ajax.reload(() => loadForm($('#diskon').val()));
-    //                     Swal.fire('Terhapus!', 'Data berhasil dihapus.', 'success');
-    //                 })
-    //                 .fail((errors) => {
-    //                     Swal.fire('Gagal!', 'Tidak dapat menghapus data.', 'error');
-    //                 });
-    //         }
-    //     });
-    // }
 
     function loadForm(diskon = 0, diterima = 0) {
         $('#total').val($('.total').text());
@@ -425,6 +479,8 @@
 
         $.get(`{{ url('/transaksi/loadform') }}/${diskon}/${$('.total').text()}/${diterima}`)
             .done(response => {
+                $('#diskonrp').val('Rp. ' + response.diskonrp);
+                console.log($('#diskonrp').val());
                 $('#totalrp').val('Rp. ' + response.totalrp);
                 $('#bayarrp').val('Rp. ' + response.bayarrp);
                 $('#bayar').val(response.bayar);

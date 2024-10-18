@@ -46,6 +46,9 @@ class PenjualanController extends Controller
             ->editColumn('diskon', function ($penjualan) {
                 return $penjualan->diskon . '%';
             })
+            ->editColumn('total_diskon', function ($penjualan) {
+                return 'Rp. ' . format_uang($penjualan->total_diskon);
+            })
             ->editColumn('kasir', function ($penjualan) {
                 return $penjualan->user->name ?? '';
             })
@@ -68,6 +71,7 @@ class PenjualanController extends Controller
         $penjualan->total_item = 0;
         $penjualan->total_harga = 0;
         $penjualan->diskon = 0;
+        $penjualan->total_diskon = 0;
         $penjualan->bayar = 0;
         $penjualan->diterima = 0;
         $penjualan->id_user = auth()->id();
@@ -85,7 +89,33 @@ class PenjualanController extends Controller
         $penjualan->total_harga = $request->total;
         $penjualan->diskon = $request->diskon;
         $penjualan->bayar = $request->bayar;
-        $penjualan->diterima = str_replace('.','',$request->diterima);
+        $penjualan->diterima = str_replace('.','',$request->diterima); 
+       
+
+        $detail = PenjualanDetail::with('produk')->where('id_penjualan', $penjualan->id_penjualan)->get();
+        
+        $totalDiskon = 0;
+        $total = 0;
+        
+        
+        foreach ($detail as $item) {
+            //Hitung diskon per item
+            $total += $item->harga_jual * $item->jumlah - (($item->diskon * $item->jumlah) / 100 * $item->harga_jual);
+            $diskonItem = ($item->diskon / 100) * $item->harga_jual * $item->jumlah;
+            $totalDiskon += $diskonItem; //Tambahkan ke total diskon
+        }
+        
+        if ($penjualan->id_member) {
+            $diskonMember = Setting::first()->diskon ?? 0; 
+            $diskonMember = $total * ($diskonMember / 100);
+        }else {
+            $diskonMember = 0;
+        }
+
+        
+        $totalDiskon +=$diskonMember;
+          
+        $penjualan->total_diskon = $totalDiskon;
         $penjualan->update();
 
         $detail = PenjualanDetail::where('id_penjualan', $penjualan->id_penjualan)->get();
@@ -152,20 +182,24 @@ class PenjualanController extends Controller
 
         return view('penjualan.selesai', compact('setting'));
     }
-
-    public function notaKecil()
-    {
-        $setting = Setting::first();
-        $penjualan = Penjualan::find(session('id_penjualan'));
-        if (! $penjualan) {
-            abort(404);
-        }
-        $detail = PenjualanDetail::with('produk')
-            ->where('id_penjualan', session('id_penjualan'))
-            ->get();
-        
-        return view('penjualan.nota_kecil', compact('setting', 'penjualan', 'detail'));
+    public function notaKecil() {
+    $setting = Setting::first(); // mengambil data dari setting
+    $penjualan = Penjualan::find(session('id_penjualan')); // mencari data penjualan berdasarkan session
+    if (! $penjualan) {
+        abort(404);
     }
+    
+    $detail = PenjualanDetail::with('produk') // mengakses data produk untuk ditampilkan di nota
+        ->where('id_penjualan', session('id_penjualan'))
+        ->get();
+
+    // // Menghitung total diskon
+    // $totalDiskon = $detail->sum(function($item) {
+    //     return $item->diskon; // asumsikan ada field 'diskon' di PenjualanDetail
+    // });
+
+    return view('Penjualan.nota_kecil', compact('setting', 'penjualan', 'detail',));
+}
 
     public function notaBesar()
     {

@@ -13,12 +13,9 @@ class PenjualanDetail extends Model
     protected $primaryKey = 'id_penjualan_detail';
     protected $guarded = [];
 
-    
-    public function produk()
-    {
-        return $this->hasOne(produk::class,'id_produk', 'id_produk');
+    public function produk() {
+        return $this->belongsTo(produk::class, 'id_produk');
     }
-
     
     public function member()
     {

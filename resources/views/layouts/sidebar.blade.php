@@ -9,7 +9,6 @@
             </div>
             <div class="pull-left info">
                 <p>{{ auth()->user()->name }}</p>
-                <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
         </div>
         
@@ -46,8 +45,13 @@
             </li>
             <li class="header">TRANSAKSI</li>
             <li>
-                <a href="{{ route('pengeluaran.index') }}">
-                    <i class="fa fa-money"></i> <span>Pengeluaran</span>
+                <a href="{{ route('transaksi.baru') }}">
+                    <i class="fa fa-cart-arrow-down"></i> <span>Transaksi Baru</span>
+                </a>
+            </li>
+            <li>
+                <a href="{{ route('transaksi.index') }}">
+                    <i class="fa fa-cart-arrow-down"></i> <span>Transaksi Aktif</span>
                 </a>
             </li>
             <li>
@@ -61,13 +65,8 @@
                 </a>
             </li>
             <li>
-                <a href="{{ route('transaksi.index') }}">
-                    <i class="fa fa-cart-arrow-down"></i> <span>Transaksi Aktif</span>
-                </a>
-            </li>
-            <li>
-                <a href="{{ route('transaksi.baru') }}">
-                    <i class="fa fa-cart-arrow-down"></i> <span>Transaksi Baru</span>
+                <a href="{{ route('pengeluaran.index') }}">
+                    <i class="fa fa-money"></i> <span>Pengeluaran</span>
                 </a>
             </li>
             <li class="header">REPORT</li>

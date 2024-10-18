@@ -91,6 +91,7 @@ Route::get('/transaksi/checkstok/{id_produk}/{jumlah}', [PenjualanDetailControll
 Route::get('/transaksi/loadform/{diskon}/{total}/{diterima}', [PenjualanDetailController::class, 'loadform'])->name('transaksi.load_form');
 Route::resource('/transaksi', PenjualanDetailController::class)
 ->except('show');
+Route::get('/produk/data', [produkController::class, 'data'])->name('produk.data');
 
 Route::group(['middleware' => 'level:1'], function (){
 
