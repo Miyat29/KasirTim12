@@ -170,37 +170,37 @@
 
     function deleteData(url) {
     Swal.fire({
-        title: 'Yakin ingin menghapus produk?',
-        text: "Data produk yang dihapus tidak dapat dipulihkan!",
+        title: 'Yakin ingin menghapus?',
+        text: "Data yang dihapus tidak dapat dikembalikan!",
         icon: 'warning',
         showCancelButton: true,
         confirmButtonColor: '#3085d6',
         cancelButtonColor: '#d33',
-        confirmButtonText: 'Hapus',
+        confirmButtonText: 'Ya, Hapus!',
         cancelButtonText: 'Batal'
     }).then((result) => {
         if (result.isConfirmed) {
             $.post(url, {
-                '_token': $('[name=csrf-token]').attr('content'),
-                '_method': 'delete'
-            })
-            .done((response) => {
-                table.ajax.reload();
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Produk dihapus',
-                    confirmButtonText: 'Oke'
+                    '_token': $('[name=csrf-token]').attr('content'),
+                    '_method': 'delete'
+                })
+                .done((response) => {
+                    
+                    table.ajax.reload();
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Berhasil!',
+                        text: 'Produk berhasil dihapus',
+                        confirmButtonText: 'OK'
+                    });
+                })
+                .fail((errors) => {
+                    Swal.fire({
+                        icon: "error",
+                        title: "Perhatian!",
+                        text: 'Produk tidak dapat dihapus karena sudah digunakan di penjualan dan pembelian'
+                    });
                 });
-            })
-            .fail((errors) => {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: 'Tidak dapat menghapus produk!',
-                    confirmButtonText: 'Oke'
-                });
-            });
         }
     });
 }

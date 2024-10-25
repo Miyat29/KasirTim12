@@ -28,9 +28,7 @@ class MemberController extends Controller
             ->of($member)
             ->addIndexColumn()
             ->addColumn('select_all', function ($produk) {
-                return '
-                    <input type="checkbox" name="id_member[]" value="'. $produk->id_member .'">
-                ';
+                return '<input type="checkbox" name="id_member[]" value="'. $produk->id_member .'">';
             })
             ->addColumn('kode_member', function ($member) {
                 return '<span class="label label-success">'. $member->kode_member .'<span>';
@@ -124,10 +122,21 @@ class MemberController extends Controller
      */
     public function destroy($id)
     {
-        $member = Member::find($id);
+        $member = Member::findOrFail($id);
+
+        if ($member->penjualan()->exists()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'Member tidak dapat dihapus karena sudah digunakan di Daftar Penjualan'
+            ], 400); // Status 400 menunjukkan kegagalan
+        }
+        
         $member->delete();
 
-        return response(null, 204);
+        return response()->json([
+            'status' => 'success',
+            'message' => 'Member berhasil dihapus'
+        ], 200);
     }
 
  public function cetakMember(Request $request)
@@ -143,7 +152,7 @@ class MemberController extends Controller
 
         $no  = 1;
         $pdf = FacadePdf::loadView('member.cetak', compact('datamember', 'no', 'setting'));
-        $pdf->setPaper(array(0, 0, 566.93, 850.39), 'potrait');
+        $pdf->setPaper(array(0, 0, 566.93, 850.39), 'portrait');
         return $pdf->stream('member.pdf');
     }
 }

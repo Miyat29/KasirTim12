@@ -136,13 +136,13 @@
 
     function deleteData(url) {
         Swal.fire({
-            title: 'Yakin ingin menghapus member?',
-            text: "Data produk yang dihapus tidak dapat dipulihkan!",
+            title: 'Yakin ingin menghapus?',
+            text: "Data yang dihapus tidak dapat dikembalikan!",
             icon: 'warning',
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: 'Hapus',
+            confirmButtonText: 'Ya, Hapus!',
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
@@ -151,25 +151,33 @@
                     '_method': 'delete'
                 })
                 .done((response) => {
-                    table.ajax.reload();
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Produk dihapus',
-                        confirmButtonText: 'Oke'
-                    });
+                    if (response.status === 'success') {
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: response.message,
+                            confirmButtonText: 'OK'
+                        });
+                        table.ajax.reload();
+                    } else {
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Perhatian!',
+                            text: response.message
+                        });
+                    }
                 })
-                .fail((errors) => {
+                .fail((xhr) => {
                     Swal.fire({
                         icon: 'error',
-                        title: 'Gagal',
-                        text: 'Tidak dapat menghapus produk!',
-                        confirmButtonText: 'Oke'
+                        title: 'Gagal!',
+                        text: xhr.responseJSON ? xhr.responseJSON.message : 'Terjadi kesalahan!'
                     });
                 });
             }
         });
     }
+
 
     function cetakMember(url) {
         if ($('input:checked').length < 1) {
