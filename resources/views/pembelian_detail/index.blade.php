@@ -134,6 +134,8 @@
 @endsection
 
 @push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script> 
+{{-- script ini untuk memunculkan semua yang akan memunculkan alert --}}
 <script>
     let table, table2;
 
@@ -204,10 +206,36 @@
 
             loadForm($(this).val());
         });
+        $('.btn-simpan').on('click', function (e) {
+    e.preventDefault(); // Mencegah submit form otomatis
 
-        $('.btn-simpan').on('click', function () {
-            $('.form-pembelian').submit();
+    // Validasi input produk
+    if ($('#total_item').val() === '0') {
+        Swal.fire({
+            icon: 'error',
+            title: 'Produk Belum Dipilih!',
+            text: 'Silakan tambahkan produk ke dalam transaksi sebelum menyimpan.',
+            confirmButtonText: 'OK'
         });
+        return false; // Hentikan proses simpan jika produk tidak dipilih
+    }
+
+    // Tampilkan SweetAlert terlebih dahulu, lalu submit jika user menekan "OK"
+    Swal.fire({
+        icon: 'question',
+        title: 'Simpan Transaksi?',
+        text: 'Apakah Anda yakin ingin menyimpan transaksi ini?',
+        showCancelButton: true,
+        confirmButtonText: 'Simpan',
+        cancelButtonText: 'Batal'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            // Submit form setelah konfirmasi
+            $('.form-pembelian').off('submit').submit(); // Gunakan off('submit') untuk mencegah masalah event ganda
+        }
+    });
+});
+
     });
 
     function tampilProduk() {
@@ -238,20 +266,18 @@
     }
 
     function deleteData(url) {
-        if (confirm('Yakin ingin menghapus data terpilih?')) {
-            $.post(url, {
-                    '_token': $('[name=csrf-token]').attr('content'),
-                    '_method': 'delete'
-                })
-                .done((response) => {
-                    table.ajax.reload(() => loadForm($('#diskon').val()));
-                })
-                .fail((errors) => {
-                    alert('Tidak dapat menghapus data');
-                    return;
-                });
-        }
-    }
+    $.post(url, {
+        '_token': $('[name=csrf-token]').attr('content'),
+        '_method': 'delete'
+    })
+    .done((response) => {
+        table.ajax.reload();
+    })
+    .fail((errors) => {
+        console.error('Gagal menghapus data.');
+    });
+}
+
 
     function loadForm(diskon = 0) {
         $('#total').val($('.total').text());

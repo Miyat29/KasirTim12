@@ -47,8 +47,8 @@ class ProdukController extends Controller
                 // Format angka dengan pemisah ribuan
                 return number_format($produk->harga_jual, 0, ',', '.');
             })
-            ->addColumn('diskon_produk', function ($produk) {
-                return $produk->diskon_produk ? $produk->diskon_produk . '%' : '0%';
+            ->addColumn('diskon', function ($produk) {
+                return $produk->diskon . '%';
             })            
             ->addColumn('stok', function ($produk) {
                 return format_uang($produk->stok); // Gunakan helper format_uang jika sudah ada
@@ -98,8 +98,7 @@ class ProdukController extends Controller
         $request->merge([
             'harga_beli' => str_replace('.', '', $request->harga_beli),
             'harga_jual' => str_replace('.', '', $request->harga_jual),
-            'diskon_produk' => $request->diskon_produk ?? 0,  // Tambahkan validasi diskon default
-        ]);
+          ]);
     
         $produk = Produk::latest()->first() ?? new Produk();
         $request['kode_produk'] = 'P' . tambah_nol_didepan((int)$produk->id_produk + 1, 6);

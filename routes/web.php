@@ -58,6 +58,7 @@ Route::resource('/member', MemberController::class);
 Route::post('/member/cetak-member', [MemberController::class, 'cetakMember'])->name('member.cetak.member');
 
 Route::get('/supplier/data', [supplierController::class, 'data'])->name('supplier.data');
+Route::delete('supplier/{id}', [SupplierController::class, 'delete'])->name('supplier.delete');
 Route::resource('/supplier', SupplierController::class);
 
 Route::get('/pengeluaran/data', [PengeluaranController::class, 'data'])->name('pengeluaran.data');

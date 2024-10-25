@@ -211,47 +211,43 @@
         });
     }
 
-    $('#kode_produk').on('keypress', function (e) {
-        if (e.which == 13) {  // Kode 13 adalah kode untuk tombol Enter
+    $('#kode_produk').on('keypress', function(e) {
+    if (e.which == 13) { // Kode 13 adalah kode untuk tombol Enter
+        e.preventDefault();
+        let kodeProduk = $(this).val().trim(); // Ambil nilai kode produk dari input
 
-            e.preventDefault();
-            let kodeProduk = $(this).val().trim(); // Ambil nilai kode produk dari input
-            if (kodeProduk !== '') {
-                // Kirimkan request AJAX ke server untuk menambah produk berdasarkan kode
-                $.ajax({
-                    url: '{{ route('transaksi.store') }}', // Sesuaikan dengan route yang benar
-                    type: 'POST',
-                    data: {
-                        kode_produk: kodeProduk, 
-                        id_penjualan: '{{ session('id_penjualan') }}', // Kirim ID Penjualan
-                        _token: '{{ csrf_token() }}'
-                    },
-                    success: function (response) {
-                        // Reset input setelah produk ditambahkan
-                        $('#kode_produk').val('');
-                        // Lakukan sesuatu, misalnya refresh data tabel penjualan
-                        // Refresh data tabel dengan memanggil ulang fungsi loadTable() jika ada
-                        setTimeout(() => {
-                            table.ajax.reload();
-                        }, 200);
-                    },
-                    error: function (xhr) {
-                        Swal.fire({
-                            icon: "warning",
-                            title: "Produk tidak ditemukan!",
-                            showConfirmButton: false,
-                            timer: 1500
-                        });
-
-                    // Kosongkan input setelah SweetAlert ditampilkan
+        if (kodeProduk !== '') {
+            // Kirimkan request AJAX ke server untuk menambah produk berdasarkan kode
+            $.ajax({
+                url: '{{ route('transaksi.store') }}', // Route untuk menyimpan produk ke transaksi
+                type: 'POST',
+                data: {
+                    kode_produk: kodeProduk,
+                    id_penjualan: '{{ session('id_penjualan') }}', // Kirim ID Penjualan dari session
+                    _token: '{{ csrf_token() }}' // Token CSRF
+                },
+                success: function(response) {
+                    // Reset input setelah produk ditambahkan
                     $('#kode_produk').val('');
-                    }
-                });
-            }
+                    // Reload data tabel penjualan setelah produk ditambahkan
+                    table.ajax.reload();
+                },
+                error: function(xhr) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Produk tidak ditemukan',
+                        showConfirmButton: false,
+                        timer: 1500
+                    });
+                    $('#kode_produk').val(''); // Reset input kode produk jika error
+                }
+            });
         }
-    });
+    }
+});
 
-      // Menangani event 'input' pada elemen dengan kelas 'quantity'
+
+    // Menangani event 'input' pada elemen dengan kelas 'quantity'
     // Event 'input' akan dipicu setiap kali terjadi perubahan pada nilai input
     $(document).on('input', '.quantity', function () {
     // Mendapatkan nilai atribut 'data-id' dari elemen yang sedang diinput
@@ -271,7 +267,7 @@
     // Menampilkan nilai 'stok' di konsol browser untuk debugging
     // Ini digunakan untuk memastikan bahwa nilai yang diperoleh sudah benar
     console.log(stok);
-
+ 
             if (jumlah < 1) {
                 $(this).val(1);
                 Swal.fire({
@@ -342,75 +338,86 @@
             $(this).select();
         });
 
-        $('.btn-simpan').on('click', function (e) {
-            e.preventDefault();
+        $(document).on('click', '.btn-simpan', function(e) {
+                e.preventDefault();
 
-            checkStok(); // Cek validasi stok sebelum menyimpan
+                checkStok(); // Cek stok sebelum menyimpan
 
-            if (!isStokValid) {
-            Swal.fire({
-                icon: 'error',
-                title: 'Stok Tidak Cukup!',
-                text: 'Tidak dapat menyimpan transaksi karena stok habis atau tidak mencukupi.',
-                confirmButtonText: 'OK'
-            });
-            return; // Hentikan proses simpan jika stok tidak cukup
-        }
-
-            // Mengambil nilai total pembayaran dari elemen dengan ID 'bayar'
-            let totalBayar = parseFloat($('#bayar').val()
-                .replace(/[^0-9.-]+/g, "")); // Menghapus semua karakter kecuali angka, titik, dan tanda minus
-            // Mengubah string menjadi angka desimal (floating-point number)
-
-            // Mengambil nilai uang yang diterima dari elemen dengan ID 'diterima'
-            let uangDiterima = parseFloat($('#diterima').val()
-                .replace(/\./g, '') // Menghapus titik yang mungkin digunakan sebagai pemisah ribuan
-                .replace(',', '.')); // Mengganti koma dengan titik untuk penulisan angka desimal
-            // Mengubah string menjadi angka desimal (floating-point number)
-
-            // Mengambil nilai total diskon dari elemen dengan ID 'diskonrp'
-            let totalDiskon = $('#diskonrp').val(); // Nilai disimpan sebagai string tanpa konversi
-
-            // Menampilkan nilai-nilai tersebut di konsol browser untuk tujuan debugging
-            console.log('Total Bayar:', totalBayar); // Memeriksa apakah total pembayaran sudah benar
-            console.log('Uang Diterima:', uangDiterima); // Memeriksa apakah uang diterima sudah benar
-            console.log('Total Diskon:', totalDiskon); // Memeriksa apakah total diskon sudah benar
-
-
-            if (isNaN(uangDiterima) || isNaN(totalBayar)) { 
-                // isnan adalah fungsi untuk mengecek apakah suatu nilai bukan angka jika nilai tersebut bukan angka, isnan akan mengembalikan true(benar) sebaliknya jika nilai tersebut angka isnan akan mengembalikan false(salah).
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Input Tidak Valid',
-                    text: 'Silakan masukkan angka yang valid untuk bayar dan diterima.',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            if (uangDiterima < totalBayar) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Gagal',
-                    text: 'Uang diterima tidak mencukupi untuk membayar total transaksi!',
-                    confirmButtonText: 'OK'
-                });
-                return;
-            }
-
-            Swal.fire({
-                title: 'Konfirmasi',
-                text: 'Apakah Anda yakin ingin menyimpan transaksi ini?',
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: 'Ya, simpan!',
-                cancelButtonText: 'Tidak, batalkan'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    $('.form-penjualan').submit();
+                if (!isStokValid) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Stok Tidak Cukup!',
+                        text: 'Tidak dapat menyimpan transaksi karena stok habis atau tidak mencukupi.',
+                        confirmButtonText: 'OK'
+                    });
+                    return; // Hentikan proses simpan jika stok tidak cukup
                 }
+
+             // Ambil nilai total dan uang diterima
+                let totalBayar = parseFloat($('#bayar').val().replace(/[^0-9.-]+/g, ""));
+                // Mengambil nilai dari elemen dengan ID "bayar", lalu menghapus semua karakter kecuali angka, tanda minus, dan titik desimal
+                // menggunakan regex (/[^0-9.-]+/g), sehingga hanya menyisakan angka untuk diubah menjadi tipe data float (parseFloat).
+
+                let uangDiterima = parseFloat($('#diterima').val().replace(/\./g, '').replace(',', '.'));
+                // Mengambil nilai dari elemen dengan ID "diterima".
+                // Pertama, menghapus semua titik (.) dengan mengganti mereka menjadi string kosong untuk menghindari kesalahan format angka.
+                // Lalu, mengganti tanda koma (,) menjadi titik (.) agar sesuai dengan format desimal yang digunakan dalam parseFloat.
+
+
+                // Validasi input produk
+                if ($('#total_item').val() === '0') {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Produk Belum Dipilih!',
+                        text: 'Silakan tambahkan produk ke dalam transaksi sebelum menyimpan.',
+                        confirmButtonText: 'OK'
+                    });
+                    return; // Hentikan proses simpan jika produk tidak dipilih
+                }
+
+                // Validasi input angka
+                if (isNaN(uangDiterima) || isNaN(totalBayar)) {
+                    // isNaN adalah fungsi yang digunakan untuk memeriksa apakah nilai yang diberikan bukan merupakan angka (NaN).
+                    // Jika salah satu atau kedua nilai adalah NaN, maka kondisi ini akan terpenuhi (true), 
+                    // yang biasanya berarti input dari pengguna tidak valid atau tidak dapat dikonversi menjadi angka.
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Input Tidak Valid',
+                        text: 'Silakan masukkan angka yang valid untuk bayar dan diterima.',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                if (uangDiterima < totalBayar) {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Gagal',
+                        text: 'Uang diterima tidak mencukupi untuk membayar total transaksi!',
+                        confirmButtonText: 'OK'
+                    });
+                    return;
+                }
+
+                Swal.fire({
+                    title: 'Konfirmasi',
+                    text: 'Apakah Anda yakin ingin menyimpan transaksi ini?',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'Ya, simpan!',
+                    cancelButtonText: 'Tidak, batalkan'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        $('.form-penjualan').submit(); // Submit form jika konfirmasi "Ya"
+                        Swal.fire({
+                            icon: 'success',
+                            title: 'Berhasil',
+                            text: 'Transaksi berhasil disimpan!',
+                            confirmButtonText: 'OK'
+                        });
+                    }
+                });
             });
-        });
     });
 
     function tampilProduk() {

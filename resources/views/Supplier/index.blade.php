@@ -70,23 +70,27 @@
                         $('#modal-form').modal('hide');
                         table.ajax.reload();
                         Swal.fire({
-                        icon: 'success',
-                        title: 'Berhasil!',
-                        text: 'Supplier berhasil disimpan',
-                        confirmButtonText: 'OK'
-                    });
+                            icon: 'success',
+                            title: 'Berhasil!',
+                            text: 'Supplier berhasil disimpan',
+                            confirmButtonText: 'OK'
+                        });
                     })
                     .fail((errors) => {
+                        // Menangani error dan menampilkan pesan dari server
+                        let response = errors.responseJSON;
                         Swal.fire({
-                        icon: 'error',
-                        title: 'Gagal',
-                        text: 'Tidak dapat menyimpan Supplier!',
-                        confirmButtonText: 'OK'
-                    });
+                            icon: 'error',
+                            title: 'Gagal',
+                            text: response.message || 'Tidak dapat menyimpan Supplier!',
+                            confirmButtonText: 'OK'
+                        });
                     });
                 return false; // Prevent default form submission
             }
         });
+
+
     });
 
     function addForm(url) {
@@ -134,7 +138,7 @@
                         '_method': 'delete'
                     })
                     .done((response) => {
-                        $('#modal-form').modal('hide');
+                       
                         table.ajax.reload();
                         Swal.fire({
                             icon: 'success',
@@ -147,7 +151,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal',
-                            text: 'Tidak dapat menghapus Supplier!',
+                            text: 'Tidak dapat menghapus Supplier karena Supplier sedang digunakan!',
                             confirmButtonText: 'OK'
                         });
                     });

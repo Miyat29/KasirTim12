@@ -105,6 +105,20 @@ class PenjualanDetailController extends Controller
         if (!$penjualanId) {
          return response()->json(['message' => 'ID Penjualan tidak ditemukan'], 400);
         }
+
+
+        // Cek apakah produk sudah ada dalam detail penjualan
+        $detail = PenjualanDetail::where('id_penjualan', $penjualanId)
+                    ->where('id_produk', $produk->id_produk)
+                    ->first();
+    
+        if ($detail) {
+            // Jika produk sudah ada, perbarui jumlah dan subtotal
+            $detail->jumlah += 1;
+            $detail->subtotal = ($detail->harga_jual - ($detail->harga_jual * $detail->diskon / 100)) * $detail->jumlah;
+            $detail->save();
+        } else {
+            // Jika produk belum ada, buat detail baru
     
         $detail = new PenjualanDetail();
         $detail->id_penjualan = $request->id_penjualan;
@@ -115,6 +129,8 @@ class PenjualanDetailController extends Controller
         $detail->subtotal = ($produk->harga_jual * $detail->jumlah) 
             - (($produk->diskon / 100) * ($produk->harga_jual * $detail->jumlah)); // Hitung subtotal setelah diskon
         $detail->save();
+
+        }
     
         return response()->json( 'Data berhasil disimpan', 200);
     }
