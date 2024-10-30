@@ -26,6 +26,7 @@ class ProdukController extends Controller
     {
         $produk = Produk::leftJoin('kategori', 'kategori.id_kategori', 'produk.id_kategori')
             ->select('produk.*', 'nama_kategori')
+            ->orderBy('produk.created_at', 'desc')
             ->get();
     
         return datatables()
@@ -41,11 +42,11 @@ class ProdukController extends Controller
             })
             ->addColumn('harga_beli', function ($produk) {
                 // Format angka dengan pemisah ribuan
-                return number_format($produk->harga_beli, 0, ',', '.');
+                return 'Rp .' . number_format($produk->harga_beli, 0, ',', '.');
             })
             ->addColumn('harga_jual', function ($produk) {
                 // Format angka dengan pemisah ribuan
-                return number_format($produk->harga_jual, 0, ',', '.');
+                return 'Rp .' . number_format($produk->harga_jual, 0, ',', '.');
             })
             ->addColumn('diskon', function ($produk) {
                 return $produk->diskon . '%';

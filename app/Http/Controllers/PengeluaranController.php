@@ -14,7 +14,7 @@ class PengeluaranController extends Controller
 
     public function data()
     {
-        $pengeluaran = Pengeluaran::orderBy('id_pengeluaran', 'asc')->get();
+        $pengeluaran = Pengeluaran::orderBy('id_pengeluaran', 'desc')->get();
 
         return datatables()
             ->of($pengeluaran)
@@ -23,7 +23,7 @@ class PengeluaranController extends Controller
                 return tanggal_indonesia($pengeluaran->created_at, false);
             })
             ->addColumn('nominal', function ($pengeluaran) {
-                return format_uang($pengeluaran->nominal);
+                return 'Rp .' . format_uang($pengeluaran->nominal);
             })
             ->addColumn('aksi', function ($pengeluaran) {
                 return '

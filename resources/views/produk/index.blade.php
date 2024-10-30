@@ -33,8 +33,8 @@
                             <th>Nama</th>
                             <th>Kategori</th>
                             <th>Merk</th>
-                            <th>Harga Beli</th>
-                            <th>Harga Jual</th>
+                            <th width="15%">Harga Beli</th>
+                            <th width="15%">Harga Jual</th>
                             <th>Diskon</th>
                             <th>Stok</th>
                             <th>Keterangan</th>

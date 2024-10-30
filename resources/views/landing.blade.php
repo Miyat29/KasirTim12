@@ -585,7 +585,7 @@
                 </div>
 
                 <div class="box-tim" data-aos="flip-right" data-aos-duration="800">
-                    <div class="box-img"><img src="{{ asset('images/pp-yaya.jpg') }}" alt=""></div>
+                    <div class="box-img"><img src="{{ asset('images/p adu.jpeg') }}" alt=""></div>
                     <h2 class="name">Yayat H T</h2>
                     <h4 class="status">Anggota</h4>
                     <div class="icon">
@@ -679,7 +679,7 @@
                         <p><img src="{{ asset('images/phone.png') }}" alt="" width="10px"
                                 height="10px">{{ $setting->telepon }}</p>
                     </a>
-                    <a target="_blank" href="{{ $setting->email }}">
+                    <a target="_blank" href="mailto:{{ $setting->email }}">
                         <p><img src="{{ asset('images/email.png') }}" alt="" width="10px"
                                 height="10px">{{ $setting->email }}</p>
                     </a>

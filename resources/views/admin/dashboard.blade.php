@@ -163,7 +163,7 @@
                     pointDot: false,
                     responsive: true,
                     scaleLabel: function(label) {
-                        return 'Rp ' + label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
+                        return 'Rp .' + label.value.toString().replace(/\B(?=(\d{3})+(?!\d))/g,
                             "."); // Format Rupiah
                     },
                     scales: {
