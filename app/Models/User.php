@@ -63,4 +63,12 @@ class User extends Authenticatable
     {
         return $query->where('level', '!=', 1);
     }
+
+    public function penjualan()
+    {
+        // Mendefinisikan relasi "hasMany" antara model Supplier dan model Pembelian
+        // Artinya, satu supplier dapat memiliki banyak catatan pembelian (transaksi pembelian)
+        // Relasi ini menghubungkan model Supplier dengan model Pembelian berdasarkan kolom 'id_supplier'
+        return $this->hasMany(Penjualan::class, 'id_user');
+    }
 }

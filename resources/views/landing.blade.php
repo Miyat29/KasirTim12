@@ -46,11 +46,11 @@
         }
 
         .container-ber {
-            margin-top: 80px;
+            margin-top: 20vh;
         }
 
         .img-ber {
-            margin-top: 50px;
+            margin-top: 100px;
         }
 
         .teks-ber {
@@ -95,7 +95,9 @@
         }
 
         .img-ten {
-            border-radius: 10px;
+            height: 85vh;
+            border-radius: 20px;
+            padding: 1px 0px 0px 10px;
         }
 
         .teks-tentang {
@@ -116,7 +118,7 @@
 
         /* tim */
         .tim {
-            height: 100vh;
+            height: 110vh;
             margin-top: 10px;
             justify-content: space-between;
             flex-wrap: nowrap;
@@ -207,7 +209,7 @@
         /* tentang kami */
 
         .kami {
-            height: 70vh;
+            height: 75vh;
             background: #446DB2;
         }
 
@@ -267,6 +269,10 @@
         .kasirrr img {
             filter: invert(1) brightness(2);
             margin: 5px;
+        }
+
+        .teks-copy a{
+            color: white
         }
 
         /* /tentang kami */
@@ -489,9 +495,6 @@
                         <a class="nav-link" href="#tim11">Tim</a>
                     </li>
                     <!-- Login Button -->
-                    <li class="nav-itemm">
-                        <a class="btn btn-outline-light ms-3"href="{{ route('login') }}">Login</a>
-                    </li>
                 </ul>
             </div>
         </div>
@@ -506,15 +509,14 @@
                 <br>transaksi
                 penjualan yang dibutuhkan bagi Toko Swalayan maupun <br>Sekolah Pencetak Wirausaha (SPW)</p>
             <div class="buttom-ber"><a href="{{ route('login') }}" class="btn btn-lg" data-aos="zoom-in"
-                    data-aos-duration="800">Mulai</a></div>
+                    data-aos-duration="800">Login</a></div>
         </div>
         <div class="img-ber" data-aos="fade-up" data-aos-duration="1000">
-            <img src="{{ url($setting->path_logo) }}" alt=""
-                    width="400px" height="400px">
+            <img src="{{ asset('images/ftBeranda.png') }}" alt="" width="400vh" height="400vh">
         </div>
     </section>
 
-    <!-- Bagian Tim -->
+    <!-- Bagian tentang kasir -->
 
     <section class="tentang" id="tentang">
         <!-- Image Section -->
@@ -661,7 +663,7 @@
                         <p><img src="{{ asset('images/facebook.png') }}" alt="" width="10px"
                                 height="10px">Facebook</p>
                     </a>
-                    <a target="_blank" href="{{ $setting->twitter }}">
+                    <a target="_blank" href="{{ $setting->twiter }}">
                         <p><img src="{{ asset('images/twiter-x.png') }}" alt="" width="10px"
                                 height="10px">Twiter-x</p>
                     </a>
@@ -672,15 +674,12 @@
                 </div>
                 <div class="kasirrr">
                     <h5 class="teks-kami">SmartKasir</h5>
-                    <a target="_blank" href="#">
-                        <p><img src="{{ asset('images/lok p.png') }}" alt="" width="10px"
-                                height="10px">{{ $setting->alamat }}</p>
-                    </a>
+                    <p>Jalan. Talagasari No. 35 Kawalimukti <br> Kawali Ciamis 46253</p>
                     <a target="_blank" href="https://wa.me/085727831822">
                         <p><img src="{{ asset('images/phone.png') }}" alt="" width="10px"
                                 height="10px">{{ $setting->telepon }}</p>
                     </a>
-                    <a target="_blank" href="#">
+                    <a target="_blank" href="{{ $setting->email }}">
                         <p><img src="{{ asset('images/email.png') }}" alt="" width="10px"
                                 height="10px">{{ $setting->email }}</p>
                     </a>
@@ -691,7 +690,8 @@
         <div class="hr">
         </div>
         <div class="teks-copy">
-            <p>Copyright © 2024 - Developed by Tim 11</p>
+            <strong>Copyright &copy; 2024 <a href="https://adminlte.io">{{ $setting->nama_perusahaan }}</a>.</strong> All rights
+    reserved.
         </div>
     </section>
 

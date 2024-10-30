@@ -112,10 +112,31 @@ class UserController extends Controller
      */
     public function destroy($id)
     {
-        $user = User::find($id)->delete();
-
-        return response(null, 204);
+        try {
+            // Mencari User berdasarkan ID, jika tidak ditemukan akan menghasilkan error 404 (Not Found)
+            $User = User::findOrFail($id);
+    
+            // Cek apakah User sudah digunakan di tabel pembelian dengan relasi pembelian
+            // Jika User sudah digunakan (misalnya ada transaksi yang terkait dengan User ini), maka proses penghapusan dibatalkan
+            if ($User->penjualan()->exists()) {
+                // Mengembalikan respons JSON dengan pesan bahwa User tidak bisa dihapus
+                // dan status HTTP 400 (Bad Request) karena User sudah digunakan
+                return response()->json(['message' => 'User tidak dapat dihapus karena sudah digunakan di pembelian'], 400);
+            }
+    
+            // Jika User belum digunakan, lanjutkan proses penghapusan
+            $User->delete();
+    
+            // Mengembalikan respons JSON dengan pesan sukses dan status HTTP 200 (OK)
+            return response()->json(['message' => 'Data berhasil dihapus'], 200);
+        } catch (\Exception $e) {
+            // Jika terjadi kesalahan saat proses (misalnya masalah koneksi database atau query error)
+            // Mengembalikan respons JSON dengan pesan gagal dan status HTTP 500 (Internal Server Error)
+            return response()->json(['message' => 'Tidak dapat menghapus data'], 500);
+        }
     }
+    
+
 
     public function profil()
     {

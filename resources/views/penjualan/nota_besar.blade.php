@@ -11,9 +11,13 @@
             /* font-family: Arial, Helvetica, sans-serif; */
             font-size: 14px;
         }
-        table.data td,
+        table.data td {
+            border: 1px solid #cccccc;
+            padding: 5px;
+        }
         table.data th {
-            border: 1px solid #ccc;
+            border: 1px solid #cccccc;
+            background-color: chartreuse;
             padding: 5px;
         }
         table.data {
@@ -50,8 +54,8 @@
         <thead>
             <tr>
                 <th>No</th>
-                <th>Kode</th>
                 <th>Nama</th>
+                <th>Kode</th>
                 <th>Harga Satuan</th>
                 <th>Jumlah</th>
                 <th>Diskon</th>

@@ -69,7 +69,7 @@
 
         .login {
             background: #446DB2;
-            height: 555px;
+            height: 100vh;
             width: 50%;
         }
 

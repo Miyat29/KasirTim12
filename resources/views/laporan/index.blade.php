@@ -22,7 +22,7 @@
                 <a href="{{ route('laporan.export_pdf', [$tanggalAwal, $tanggalAkhir]) }}" target="_blank" class="btn btn-danger btn-xs btn-flat"><i class="fa fa-file-pdf-o"></i> Export PDF</a>
             </div>
             <div class="box-body table-responsive">
-                <table class="table table-stiped table-bordered">
+                <table class="table table-striped table-bordered">
                     <thead>
                         <th width="5%">No</th>
                         <th>Tanggal</th>

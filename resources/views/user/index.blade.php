@@ -17,7 +17,7 @@
                 <button onclick="addForm('{{ route('user.store') }}')" class="btn btn-success btn-xs btn-flat"><i class="fa fa-plus-circle"></i> Tambah</button>
             </div>
             <div class="box-body table-responsive">
-                <table class="table table-stiped table-bordered">
+                <table class="table table-striped table-bordered">
                     <thead>
                         <th width="5%">No</th>
                         <th>Nama</th>
@@ -147,7 +147,7 @@
                         Swal.fire({
                             icon: 'error',
                             title: 'Gagal',
-                            text: 'Tidak dapat menghapus data!',
+                            text: 'Tidak dapat menghapus User karena user sudah di pakai!',
                             confirmButtonText: 'OK'
                         });
                     });

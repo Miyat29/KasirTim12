@@ -16,7 +16,8 @@ class DashboardController extends Controller
     public function index()
     {
 
-        $kategori = kategori::count();
+        $kategori = kategori::count(); 
+        // count() digunakan untuk menghitung total record (baris data) yang ada di tabel yang bersangkutan.
         $produk   = produk::count();
         $supplier = Supplier::count();
         $member   = member::count();
@@ -35,6 +36,7 @@ class DashboardController extends Controller
 
         while (strtotime($tanggal_awal) <= strtotime($tanggal_akhir)) {
             $data_tanggal [] =(int) substr($tanggal_awal, 8, 2) ;
+                                    // substr($tanggal_awal, 8, 2) mengambil dua karakter dari posisi ke-8 di $tanggal_awal yang mewakili hari dalam format YYYY-MM-DD.
          
 
             $total_penjualan = Penjualan::where('created_at', 'LIKE', "%$tanggal_awal%")->sum('bayar');

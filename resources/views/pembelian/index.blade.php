@@ -20,7 +20,7 @@
                 @endempty
             </div>
             <div class="box-body table-responsive">
-                <table class="table table-stiped table-bordered table-pembelian">
+                <table class="table table-striped table-bordered table-pembelian">
                     <thead>
                         <th width="5%">No</th>
                         <th>Tanggal</th>

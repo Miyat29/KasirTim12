@@ -14,7 +14,7 @@
     <div class="col-lg-12">
         <div class="box">
             <div class="box-body table-responsive">
-                <table class="table table-stiped table-bordered table-penjualan">
+                <table class="table table-striped table-bordered table-penjualan">
                     <thead>
                         <th width="5%">No</th>
                         <th>Tanggal</th>
