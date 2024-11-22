@@ -585,7 +585,7 @@
                 </div>
 
                 <div class="box-tim" data-aos="flip-right" data-aos-duration="800">
-                    <div class="box-img"><img src="{{ asset('images/p adu.jpeg') }}" alt=""></div>
+                    <div class="box-img"><img src="{{ asset('images/saya setengah.jpg') }}" alt=""></div>
                     <h2 class="name">Yayat H T</h2>
                     <h4 class="status">Anggota</h4>
                     <div class="icon">
